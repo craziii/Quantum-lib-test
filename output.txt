@@ -1,0 +1,181 @@
+Test Number: 1
+Output of Circuit:
+[0]:501015
+[1]:498985
+Simulations: 1000000
+Approx Probability Probability: 0.498985
+
+Test Number: 2
+Output of Circuit:
+[0]:500751
+[1]:499249
+Simulations: 1000000
+Approx Probability Probability: 0.499249
+
+Test Number: 3
+Output of Circuit:
+[0]:500749
+[1]:499251
+Simulations: 1000000
+Approx Probability Probability: 0.499251
+
+Test Number: 4
+Output of Circuit:
+[0]:499424
+[1]:500576
+Simulations: 1000000
+Approx Probability Probability: 0.500576
+
+Test Number: 5
+Output of Circuit:
+[0]:500713
+[1]:499287
+Simulations: 1000000
+Approx Probability Probability: 0.499287
+
+Test Number: 6
+Output of Circuit:
+[0]:500352
+[1]:499648
+Simulations: 1000000
+Approx Probability Probability: 0.499648
+
+Test Number: 7
+Output of Circuit:
+[0]:500734
+[1]:499266
+Simulations: 1000000
+Approx Probability Probability: 0.499266
+
+Test Number: 8
+Output of Circuit:
+[0]:499377
+[1]:500623
+Simulations: 1000000
+Approx Probability Probability: 0.500623
+
+Test Number: 9
+Output of Circuit:
+[0]:499849
+[1]:500151
+Simulations: 1000000
+Approx Probability Probability: 0.500151
+
+Test Number: 10
+Output of Circuit:
+[0]:499240
+[1]:500760
+Simulations: 1000000
+Approx Probability Probability: 0.50076
+
+Test Number: 11
+Output of Circuit:
+[0]:500259
+[1]:499741
+Simulations: 1000000
+Approx Probability Probability: 0.499741
+
+Test Number: 12
+Output of Circuit:
+[0]:499914
+[1]:500086
+Simulations: 1000000
+Approx Probability Probability: 0.500086
+
+Test Number: 13
+Output of Circuit:
+[0]:499518
+[1]:500481
+Simulations: 999999
+Approx Probability Probability: 0.5004815004815005
+
+Test Number: 14
+Output of Circuit:
+[0]:499829
+[1]:500171
+Simulations: 1000000
+Approx Probability Probability: 0.500171
+
+Test Number: 15
+Output of Circuit:
+[0]:498989
+[1]:501011
+Simulations: 1000000
+Approx Probability Probability: 0.501011
+
+Test Number: 16
+Output of Circuit:
+[0]:499456
+[1]:500544
+Simulations: 1000000
+Approx Probability Probability: 0.500544
+
+Test Number: 17
+Output of Circuit:
+[0]:499696
+[1]:500304
+Simulations: 1000000
+Approx Probability Probability: 0.500304
+
+Test Number: 18
+Output of Circuit:
+[0]:499362
+[1]:500638
+Simulations: 1000000
+Approx Probability Probability: 0.500638
+
+Test Number: 19
+Output of Circuit:
+[0]:500257
+[1]:499743
+Simulations: 1000000
+Approx Probability Probability: 0.499743
+
+Test Number: 20
+Output of Circuit:
+[0]:500048
+[1]:499952
+Simulations: 1000000
+Approx Probability Probability: 0.499952
+
+Test Number: 21
+Output of Circuit:
+[0]:499722
+[1]:500278
+Simulations: 1000000
+Approx Probability Probability: 0.500278
+
+Test Number: 22
+Output of Circuit:
+[0]:500546
+[1]:499454
+Simulations: 1000000
+Approx Probability Probability: 0.499454
+
+Test Number: 23
+Output of Circuit:
+[0]:499410
+[1]:500590
+Simulations: 1000000
+Approx Probability Probability: 0.50059
+
+Test Number: 24
+Output of Circuit:
+[0]:499131
+[1]:500869
+Simulations: 1000000
+Approx Probability Probability: 0.500869
+
+Test Number: 25
+Output of Circuit:
+[0]:500155
+[1]:499845
+Simulations: 1000000
+Approx Probability Probability: 0.499845
+
+Total Test Number: 25
+Output of All Circuits:
+[0]:12498496
+[1]:12501503
+Total Simulations: 24999999
+Total Approx Probability Probability: 0.5000601400024056
