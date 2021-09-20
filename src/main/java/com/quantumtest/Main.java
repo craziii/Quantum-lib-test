@@ -66,6 +66,7 @@ public class Main {
         }
         catch(Exception e){
             getOptions();
+            //e.printStackTrace();
         }
         System.console().flush();
     }
@@ -80,7 +81,7 @@ public class Main {
 
     private static void printIntro() {
         System.console().writer().println("\nQuantum Testing Software for the redfx Strange Library\n");
-        System.console().writer().println("Argument format: java -jar quantum-test.jar \"--option\" \"numTests\" \"numSteps\"\n\n");
+        System.console().writer().println("Argument format: java -jar quantum-test.jar --option numTests numSteps\n\n");
     }
 
     private static void printOption(String option, String info) {
@@ -103,8 +104,20 @@ public class Main {
         String folder = "rotation/";
         String baseFileName = "Rotation";
         String baseFileEnd = ".csv";
-        for(double i = 0; i < 6.3; i+=0.1){
-            createFile(folder,baseFileName+ i +baseFileEnd,new R(i,0),numTests, steps,i+"");
+        for (int axis = 0; axis < 3; axis++){
+            for(double i = 0; i < 6.3; i+=0.1){
+                Gate[] gates = {new Hadamard(0),new R(i,axis)};
+                StringBuilder trimmedName = new StringBuilder();
+                for(int j = 0; j < 4; j++){
+                    try {
+                        trimmedName.append(String.valueOf(i).charAt(j));
+                    }
+                    catch(Exception e){
+
+                    }
+                }
+                createFile(folder,baseFileName+trimmedName+"axis"+axis+baseFileEnd,gates,numTests,steps, "angle:"+trimmedName.toString()+" axis:"+axis);
+            }
         }
     }
 
@@ -114,6 +127,21 @@ public class Main {
         Program program = new Program(1);
         SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
         program.addStep(createGate(gate));
+        simulateCircuit(fileOutputStream, count, steps, zeroCount, oneCount, program, sqee);
+    }
+
+    private static void runSteps(Gate[] gates, FileOutputStream fileOutputStream, int count, int steps) throws IOException {
+        long zeroCount = 0;
+        long oneCount = 0;
+        Program program = new Program(1);
+        SimpleQuantumExecutionEnvironment sqee = new SimpleQuantumExecutionEnvironment();
+        for (Gate gate:gates) {
+            program.addStep(createGate(gate));
+        }
+        simulateCircuit(fileOutputStream, count, steps, zeroCount, oneCount, program, sqee);
+    }
+
+    private static void simulateCircuit(FileOutputStream fileOutputStream, int count, int steps, long zeroCount, long oneCount, Program program, SimpleQuantumExecutionEnvironment sqee) throws IOException {
         for (int i = 0; i < steps; i++) {
             int temp = simulateCircuit(sqee, program);
             switch (temp){
@@ -145,7 +173,7 @@ public class Main {
         }
     }
 
-    private static void createFile(String folder, String file, Gate gate, int tests, int steps, String extra) {
+    private static void createFile(String folder, String file, Gate[] gates, int tests, int steps, String extra) {
         try {
             File outputFolder = new File(folder);
             outputFolder.mkdir();
@@ -153,8 +181,8 @@ public class Main {
             FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
             fileOutputStream.write("testNo,ones,zeros,cycles,average\n".getBytes(StandardCharsets.UTF_8));
             for(int j = 1; j <= tests; j++) {
-                System.console().writer().println("Running test number: "+j+" on gate: "+gate.getName() + " with extra information: "+extra);
-                runSteps(gate, fileOutputStream, j, steps);
+                System.console().writer().println("Running test number: "+j+" on gate: "+gates[1].getName() + " with extra information: "+extra);
+                runSteps(gates, fileOutputStream, j, steps);
             }
             fileOutputStream.flush();
             fileOutputStream.close();
