@@ -1,2 +1,8 @@
+com/quantumtest/RotationZ.java
+ com.quantumtest.RotationZ
+com/quantumtest/RotationY.java
+ com.quantumtest.RotationY
+com/quantumtest/RotationX.java
+ com.quantumtest.RotationX
 com/quantumtest/Main.java
  com.quantumtest.Main
