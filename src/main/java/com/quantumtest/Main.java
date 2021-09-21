@@ -9,7 +9,6 @@ import org.redfx.strange.gate.Fourier;
 import org.redfx.strange.gate.Hadamard;
 import org.redfx.strange.gate.Identity;
 import org.redfx.strange.gate.ProbabilitiesGate;
-import org.redfx.strange.gate.R;
 import org.redfx.strange.gate.Toffoli;
 import org.redfx.strange.gate.X;
 import org.redfx.strange.gate.Y;
@@ -61,12 +60,15 @@ public class Main {
                 case "-r":
                 case "--rotation":
                     rotationTest(numTests,stepsToRun); break;
+                case "-t":
+                case "--testrng":
+                    rngTest(numTests,stepsToRun); break;
                 default: getOptions(); break;
             }
         }
         catch(Exception e){
             getOptions();
-            //e.printStackTrace();
+            e.printStackTrace();
         }
         System.console().flush();
     }
@@ -76,6 +78,7 @@ public class Main {
         printOption("help", "Prints this help option");
         printOption("general","Run a general test on a few gates and print them to a file");
         printOption("rotation", "Run a test on the rotation gate R");
+        printOption("testRNG","Run a set of tests for RNG values");
         System.console().flush();
     }
 
@@ -106,7 +109,13 @@ public class Main {
         String baseFileEnd = ".csv";
         for (int axis = 0; axis < 3; axis++){
             for(double i = 0; i < 6.3; i+=0.1){
-                Gate[] gates = {new Hadamard(0),new R(i,axis)};
+                Gate[] gates = new Gate[2];
+                gates[0] = new Hadamard(0);
+                switch (axis){
+                    case 0: gates[1] = new RotationX(i,0);
+                    case 1: gates[1] = new RotationY(i,0);
+                    case 2: gates[1] = new RotationZ(i,0);
+                }
                 StringBuilder trimmedName = new StringBuilder();
                 for(int j = 0; j < 4; j++){
                     try {
@@ -118,6 +127,26 @@ public class Main {
                 }
                 createFile(folder,baseFileName+trimmedName+"axis"+axis+baseFileEnd,gates,numTests,steps, "angle:"+trimmedName.toString()+" axis:"+axis);
             }
+        }
+    }
+
+    private static void rngTest(int numTests, int steps){
+        String folder = "RNG/";
+        String baseFileName = "Angle";
+        String baseFileEnd = ".csv";
+        for(double i = 0; i < 4*Math.PI; i+=Math.PI/50){
+            Gate[] gate = new Gate[1];
+            gate[0] = new RotationX(i,0);
+            StringBuilder trimmedName = new StringBuilder();
+            for(int j = 0; j < 4; j++){
+                try {
+                    trimmedName.append(String.valueOf(i).charAt(j));
+                }
+                catch(Exception e){
+
+                }
+            }
+            createFile(folder,baseFileName+trimmedName+baseFileEnd,gate,numTests,steps, "angle:"+trimmedName.toString());
         }
     }
 
@@ -181,7 +210,12 @@ public class Main {
             FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
             fileOutputStream.write("testNo,ones,zeros,cycles,average\n".getBytes(StandardCharsets.UTF_8));
             for(int j = 1; j <= tests; j++) {
-                System.console().writer().println("Running test number: "+j+" on gate: "+gates[1].getName() + " with extra information: "+extra);
+                if(gates.length > 1){
+                    System.console().writer().println("Running test number: "+j+" on gate: "+gates[1].getName() + " with extra information: "+extra);
+                }
+                else{
+                    System.console().writer().println("Running test number: "+j+" on gate: "+gates[0].getName() + " with extra information: "+extra);
+                }
                 runSteps(gates, fileOutputStream, j, steps);
             }
             fileOutputStream.flush();
