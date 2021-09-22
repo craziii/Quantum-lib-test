@@ -187,7 +187,7 @@ public class Main {
                 filenames.add(f.getName());
             }
             for (String filename:filenames) {
-                System.console().writer().println("\n\n\nFilename = "+filename);
+                //System.console().writer().println("\n\n\nFilename = "+filename);
                 double angle = getAngle(filename);
                 int zeros = 0;
                 int ones = 0;
@@ -195,7 +195,7 @@ public class Main {
                 double probability = 0;
                 int count = 0;
                 BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(directory+filename)));
-                System.console().writer().println("Reading from file: "+filename);
+                //System.console().writer().println("Reading from file: "+filename);
                 br.readLine();
                 while (br.ready()) {
                     String line = br.readLine();
