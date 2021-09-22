@@ -15,10 +15,28 @@ import org.redfx.strange.gate.Y;
 import org.redfx.strange.gate.Z;
 import org.redfx.strange.local.SimpleQuantumExecutionEnvironment;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Main {
 
@@ -63,6 +81,9 @@ public class Main {
                 case "-t":
                 case "--testrng":
                     rngTest(numTests,stepsToRun); break;
+                case "-a":
+                case "--analyse":
+                    analyseRngTest(); break;
                 default: getOptions(); break;
             }
         }
@@ -79,6 +100,7 @@ public class Main {
         printOption("general","Run a general test on a few gates and print them to a file");
         printOption("rotation", "Run a test on the rotation gate R");
         printOption("testRNG","Run a set of tests for RNG values");
+        printOption("analyse", "analyse the RNG test and print the results to a file");
         System.console().flush();
     }
 
@@ -138,7 +160,7 @@ public class Main {
             Gate[] gate = new Gate[1];
             gate[0] = new RotationX(i,0);
             StringBuilder trimmedName = new StringBuilder();
-            for(int j = 0; j < 4; j++){
+            for(int j = 0; j < 5; j++){
                 try {
                     trimmedName.append(String.valueOf(i).charAt(j));
                 }
@@ -148,6 +170,62 @@ public class Main {
             }
             createFile(folder,baseFileName+trimmedName+baseFileEnd,gate,numTests,steps, "angle:"+trimmedName.toString());
         }
+    }
+
+    private static void analyseRngTest(){
+        File outputFile = new File("RNGResults.csv");
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
+            String[] header = {"Angle","Zeros","Ones","Sims","Probability"};
+            fileOutputStream.write(getCSVLine(",",header).getBytes(StandardCharsets.UTF_8));
+            String directory = "RNG/";
+            File folder = new File(directory);
+            File[] fileList = folder.listFiles();
+            List<String> filenames = new ArrayList<>();
+            assert fileList != null;
+            for (File f:fileList) {
+                filenames.add(f.getName());
+            }
+            for (String filename:filenames) {
+                System.console().writer().println("\n\n\nFilename = "+filename);
+                double angle = getAngle(filename);
+                int zeros = 0;
+                int ones = 0;
+                int sims = 0;
+                double probability = 0;
+                int count = 0;
+                BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(directory+filename)));
+                System.console().writer().println("Reading from file: "+filename);
+                br.readLine();
+                while (br.ready()) {
+                    String line = br.readLine();
+                    String[] parts = line.split(",");
+                    zeros += Integer.parseInt(parts[1]);
+                    ones += Integer.parseInt(parts[2]);
+                    sims += Integer.parseInt(parts[3]);
+                    probability += Double.parseDouble(parts[4]);
+                    count++;
+                }
+                probability = probability/count;
+                String[] outputs = {String.valueOf(angle),String.valueOf(zeros),String.valueOf(ones),String.valueOf(sims),String.valueOf(probability)};
+                fileOutputStream.write(getCSVLine(",",outputs).getBytes(StandardCharsets.UTF_8));
+            }
+            fileOutputStream.flush();
+            fileOutputStream.close();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    static double getAngle(String filename){
+        if(filename.startsWith("Angle") && filename.endsWith(".csv")){
+            StringBuilder output = new StringBuilder();
+            output.append(filename);
+            output.delete(output.length()-4,output.length());
+            output.delete(0,"Angle".length());
+            return Double.parseDouble(output.toString());
+        }
+        return 0;
     }
 
     private static void runSteps(Gate gate, FileOutputStream fileOutputStream, int count, int steps) throws IOException {
@@ -190,7 +268,7 @@ public class Main {
             outputFolder.mkdir();
             File outputFile = new File(folder+file);
             FileOutputStream fileOutputStream = new FileOutputStream(outputFile);
-            fileOutputStream.write("testNo,ones,zeros,cycles,average\n".getBytes(StandardCharsets.UTF_8));
+            fileOutputStream.write("testNo,zeros,ones,cycles,average\n".getBytes(StandardCharsets.UTF_8));
             for(int j = 1; j <= tests; j++) {
                 System.console().writer().println("Running test number: "+j+" on gate: "+gate.getName());
                 runSteps(gate, fileOutputStream, j, steps);
@@ -260,6 +338,18 @@ public class Main {
         stringBuilder.append(sims);
         stringBuilder.append(delimiter);
         stringBuilder.append(probability);
+        stringBuilder.append("\n");
+        return stringBuilder.toString();
+
+    }
+
+    static String getCSVLine(String delimiter, String[] strings){
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String s:strings) {
+            stringBuilder.append(s);
+            stringBuilder.append(delimiter);
+        }
+        stringBuilder.deleteCharAt(stringBuilder.length()-1);
         stringBuilder.append("\n");
         return stringBuilder.toString();
     }
